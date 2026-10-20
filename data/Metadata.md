@@ -39,3 +39,44 @@ Ember provides publicly accessible data under the Creative Commons Attribution 4
 - Export capacity values are estimated and do not directly represent installed solar PV capacity.
 - Reported export destinations may not always be the final destination of the products.
 - Data coverage differs across commodity types, and 2026 is currently an incomplete year.
+
+
+## Dataset 2: IRENA Solar PV Installed Capacity
+### Data Access
+
+- **Source:** International Renewable Energy Agency (IRENA)
+- **Dataset:** IRENA Renewable Energy Statistics
+- **Official Website:** https://pxweb.irena.org/pxweb/en/IRENASTAT/IRENASTAT__Power%20Capacity%20and%20Generation/Country_ELECSTAT_2026_H2_PX.px/
+- **File Name:** `IRENA.xlsx`
+- **Format:** Excel (.xlsx)
+- **Worksheet:** ELEC-C
+
+### Expected Variables
+
+The dataset contains 21,504 observations and 6 variables:
+
+- **Geographic Information:** `Country/area`, identifying countries or geographic areas.
+- **Technology:** `Technology`, identifying solar photovoltaic and solar thermal energy.
+- **Data Type:** `Data Type`, distinguishing electricity generation (GWh) and electrical installed capacity (MW).
+- **Grid Connection:** `Grid connection`, identifying grid connection categories.
+- **Temporal Information:** `Year`, representing the reporting year.
+- **Capacity and Generation:** `Value`, representing the corresponding installed capacity or electricity generation measurement.
+
+### Spatial and Temporal Coverage
+
+- **Spatial Coverage:** Global, with 224 unique countries or areas represented in the downloaded file.
+- **Project Study Area:** North America (United States, Canada, and Mexico) and South America.
+- **Temporal Coverage:** 2018–2025.
+- **Temporal Resolution:** Annual.
+- **Technology Coverage:** Solar photovoltaic and solar thermal energy.
+
+### Permissions and Restrictions
+
+The dataset is publicly accessible through IRENASTAT. Users should follow IRENA's official terms and conditions and provide appropriate source attribution.
+
+**Data Limitations:**
+
+- The `Value` column contains 12,583 missing observations.
+- The original Excel file uses grouped labels, resulting in missing entries in some categorical columns during import.
+- Installed capacity and electricity generation have different units (MW and GWh) and should not be directly compared.
+- The dataset provides annual observations, while the Ember export dataset provides monthly observations. Temporal alignment will be necessary for further analysis.
