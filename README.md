@@ -6,3 +6,5 @@ Research on what role does China solar export play in America's solar implementa
 Our Study Area include North America (USA, Canada, Mexico) and South America
 
 Research analysis the Electrical Installed Capacity of our study area
+
+modified by Tracy to test R Studio Container.
