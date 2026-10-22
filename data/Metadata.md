@@ -80,3 +80,37 @@ The dataset is publicly accessible through IRENASTAT. Users should follow IRENA'
 - The original Excel file uses grouped labels, resulting in missing entries in some categorical columns during import.
 - Installed capacity and electricity generation have different units (MW and GWh) and should not be directly compared.
 - The dataset provides annual observations, while the Ember export dataset provides monthly observations. Temporal alignment will be necessary for further analysis.
+
+
+## Dataset 3: World Bank Population Dataset
+
+### Data Access
+
+- **Source:** World Bank Group
+- **Dataset:** World Total Population Prospects
+- **Official Website:** https://data.worldbank.org/indicator/SP.POP.TOTL
+- **File Name:** `712population_712API_SP.POP.TOTL_DS2_en_csv_v2_5254.xlsx`
+- **Format:** xlsx
+- **Update Frequency:** Yearly
+
+### Expected Variables
+The dataset contains 2,120 observations, including:
+
+- **Geographic Information:** `Country Name`, `Country Code`, and `Region`, identifying countries and corresponding codes.
+- **Data Attribution:** `Indicator Name`, `Indicator Code`,
+- **Temporal Information:** `2018`, `2019`, `2020`, `2021`, `2022`, `2023`, `2024`, `2025`, indicating the yearly reporting period.
+
+### Spatial and Temporal Coverage
+
+- **Spatial Coverage:** Global, including 266 unique geographic areas or aggregates. The dataset covers Africa, Europe, Asia, Latin America and the Caribbean, North America, the Middle East, and Oceania.
+- **Project Study Area:** North America (United States, Canada, and Mexico) and South America.
+- **Temporal Coverage:** 2018 – 2025 in the current downloaded dataset.
+- **Temporal Resolution:** Yearly.
+
+### Permissions and Restrictions
+
+World Bank provides publicly accessible data under the Creative Commons Attribution 4.0 (CC BY 4.0) license. Reuse and adaptation are permitted with appropriate attribution.
+
+**Data Limitations:**
+
+- A common limitation of population data is that the figures presented are estimates rather than exact counts. The World Bank notes that current population estimates for developing countries often lack (i)reliable, recent census data and (ii) pre- and post-census estimates for countries with census data, which are provided by the United Nations Population Division and other external agencies. Moreover, the cohortcomponent method used in the dataset is a standard approach to estimating and projecting population size that requires data on fertility, mortality, and net migration. These data are often collected through sample surveys, which may have small sample sizes or limited geographic coverage. Consequently,population estimates derived from demographic models are susceptible to biases and errors arising from limitations in both the models and the underlying data. 
