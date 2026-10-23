@@ -1,0 +1,53 @@
+---
+title: "Week 02 World Bank Population Dataset Import"
+output: html
+geometry: margin=2.54cm
+---
+
+## Overview
+
+This file aims to create working import script of World Bank Population Dataset,
+and report the number of rows and columns
+
+## Directions
+
+1. Import the necessary library to read the data.
+
+2. Load the primary data file from the correct file path.
+
+3. Report the dataset's dimensions, including the number of rows and columns.
+
+------------------------------------------------------------------------
+
+## Set up the R session
+```{r setup,  message = FALSE}
+#In order to read xlsx file, I installed readxl package and load
+#install.packages('readxl')
+library(readxl)
+#Load package
+library(here)
+library(tidyverse)
+#check the current working directory
+getwd() # R's current working directory
+here() # the project root (where the .Rproj file lives)
+
+#import dataset
+population <- read_excel(here(
+  "data/712population_712API_SP.POP.TOTL_DS2_en_csv_v2_5254.xlsx"), sheet = "API_SP.POP.TOTL_DS2_en_csv_v2_5")
+```
+#Report the dimensions
+```{r report, message=FALSE}
+# Finding the dimensions of the dataset
+dim(population)       # rows, then columns
+# 266 rows and 12 columns
+#read the rows
+nrow(population)       # 266 rows
+#read the columns
+ncol(population)       # 12 rows
+#read the column names of the dataset
+colnames(population)
+#get a summary of the dataset, so that we can know if there is NA existed
+summary(population) #there is one NA each year and it is 'Not classified'
+#further get a chance to see the class of each column and first few rows
+glimpse(population)
+```
