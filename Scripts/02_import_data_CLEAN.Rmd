@@ -1,0 +1,124 @@
+### ==================================================
+
+### METADATA ANALYSIS
+
+### Dataset: China Cleantech Export Data - Solar PV
+
+### Format: rmd
+
+### ==================================================
+
+```{r, message=FALSE, warning=FALSE}
+# STEP 1: Load packages
+library(readxl)
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+# STEP 2: Import Excel file
+
+file <- "data/712clean_tech_exports_full_release_monthly.xlsx"
+
+# Check if file exists
+file.exists(file)
+
+# Check worksheet names
+excel_sheets(file)
+```
+
+
+```{r}
+# STEP 3: Read data
+all_tech <- read_excel(file, sheet = "All technologies")
+solar_pv <- read_excel(file, sheet = "Solar PV")
+```
+
+```{r}
+# STEP 4: Basic metadata
+
+# Number of observations and variables
+dim(all_tech)
+dim(solar_pv)
+
+# Variable names
+names(all_tech)
+names(solar_pv)
+
+# Data structure
+str(all_tech)
+str(solar_pv)
+
+# Preview
+head(all_tech)
+head(solar_pv)
+
+```
+
+```{r}
+# STEP 5: Geographic coverage
+
+# Unique geographic areas
+n_distinct(all_tech$Area)
+n_distinct(solar_pv$Area)
+
+# Geographic regions
+unique(all_tech$Region)
+unique(solar_pv$Region)
+
+# Geographic units per region
+all_tech %>%
+  distinct(Area, Region) %>%
+  count(Region)
+
+solar_pv %>%
+  distinct(Area, Region) %>%
+  count(Region)
+
+```
+
+```{r}
+# STEP 6: Temporal coverage
+
+range(all_tech$Date, na.rm = TRUE)
+range(solar_pv$Date, na.rm = TRUE)
+
+# Number of unique months
+n_distinct(all_tech$Date)
+n_distinct(solar_pv$Date)
+```
+
+```{r}
+# STEP 7: Missing values
+
+colSums(is.na(all_tech))
+colSums(is.na(solar_pv))
+
+```
+
+```{r}
+# STEP 8: Commodity categories
+
+unique(all_tech$`Commodity category`)
+unique(solar_pv$`Commodity category`)
+```
+
+```{r}
+# STEP 9: Compare worksheets
+
+comparison <- data.frame(
+  Sheet = c("All technologies", "Solar PV"),
+  Observations = c(nrow(all_tech), nrow(solar_pv)),
+  Variables = c(ncol(all_tech), ncol(solar_pv)),
+  Geographic_Areas = c(
+    n_distinct(all_tech$Area),
+    n_distinct(solar_pv$Area)
+  ),
+  Missing_Values = c(
+    sum(is.na(all_tech)),
+    sum(is.na(solar_pv))
+  )
+)
+
+print(comparison)
+```
