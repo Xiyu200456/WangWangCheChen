@@ -25,3 +25,11 @@
 ## Intended Audience
 
 - This project is intended for policymakers, energy researchers, solar industry stakeholders, and students interested in how China's solar PV exports relate to solar energy growth in North and South America.
+
+## Dictionary
+- **File:** CLEANED_Study_area_data_2018_2025.csv
+- **Unit of observation:** Each row in CLEANED_Study_area_data_2018_2025.csv represents one country in one year, for 15 countries and the years 2018 to 2025. For the list of country see Coverage Selection below
+- **Coverage:** North America — Canada, Mexico, United States; South America — Argentina, Bolivia, Brazil, Chile, Colombia, Ecuador, Guyana, Paraguay, Peru, Suriname, Uruguay, Venezuela.)
+- **Size:** 120 rows × 12 columns
+- **Variable** dictionary:
+ 
