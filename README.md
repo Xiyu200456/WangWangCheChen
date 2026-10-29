@@ -32,9 +32,9 @@
 - **Coverage:** North America — Canada, Mexico, United States; South America — Argentina, Bolivia, Brazil, Chile, Colombia, Ecuador, Guyana, Paraguay, Peru, Suriname, Uruguay, Venezuela.)
 - **Size:** 120 rows × 12 columns
 - **Data Sources:**
- - Ember – China Cleantech Export Data*
- https://ember-energy.org/data/china-cleantech-export-data/
-Ember – China's Solar PV Exports*
+  - Ember – China Cleantech Export Data*
+    - https://ember-energy.org/data/china-cleantech-export-data/
+-Ember – China's Solar PV Exports*
  https://ember-energy.org/data/china-solar-exports-data/
 IRENASTAT – Electricity Capacity and Generation
  https://pxweb.irena.org/
