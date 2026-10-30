@@ -34,12 +34,22 @@
 - **Data Sources:**
   - Ember – China Cleantech Export Data*
     - https://ember-energy.org/data/china-cleantech-export-data/
--Ember – China's Solar PV Exports*
- https://ember-energy.org/data/china-solar-exports-data/
-IRENASTAT – Electricity Capacity and Generation
- https://pxweb.irena.org/
-World Bank – Population, total
- https://data.worldbank.org/indicator/SP.POP.TOTL
+  - Ember – China's Solar PV Exports*
+    - https://ember-energy.org/data/china-solar-exports-data/
+  - IRENASTAT – Electricity Capacity and Generation
+    - https://pxweb.irena.org/
+  - World Bank – Population, total
+    - https://data.worldbank.org/indicator/SP.POP.TOTL
+  - *: For Ember China Cleantech Export and China's Solar PV Exports Data, Ember presents data from the General Administration of Customs of the People’s Republic of China (GACC). Prior to 2022, assembled and non-assembled cells are not disaggregated into separate commodity codes in GACC reporting. The commodity code used is 85414020 (Solar cells). All exports in this category are assigned to panel exports. From 2022 onwards, the commodity code used is 85414300 (Photovoltaic cells assembled in modules or made up into panels).
 
 - **Variable dictionary:**
- 
+  - **Area：**
+    - **Definition:** Country name
+    - **Unit:**
+    - **Source:**
+    - **Definition in the source documentation:** Country name
+  - **Study_scope**
+    - **Definition:** Country name
+    - **Unit:**
+    - **Source:**
+    - **Definition in the source documentation:** Country name 
