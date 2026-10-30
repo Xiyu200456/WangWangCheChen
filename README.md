@@ -53,7 +53,7 @@
     - **Unit:** Character
     - **Source:** Self-classification
     - **Definition in the source documentation:** North America or South America
-  -  **Year**
+  - **Year**
     - **Definition:** Observation year
     - **Unit:** Year
     - **Source:** Across four datasets
