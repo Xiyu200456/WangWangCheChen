@@ -114,3 +114,45 @@ World Bank provides publicly accessible data under the Creative Commons Attribut
 **Data Limitations:**
 
 - A common limitation of population data is that the figures presented are estimates rather than exact counts. The World Bank notes that current population estimates for developing countries often lack (i)reliable, recent census data and (ii) pre- and post-census estimates for countries with census data, which are provided by the United Nations Population Division and other external agencies. Moreover, the cohortcomponent method used in the dataset is a standard approach to estimating and projecting population size that requires data on fertility, mortality, and net migration. These data are often collected through sample surveys, which may have small sample sizes or limited geographic coverage. Consequently,population estimates derived from demographic models are susceptible to biases and errors arising from limitations in both the models and the underlying data. 
+
+
+## Dataset 4: Ember Clean Tech Export Monthly in study areas
+
+### Data Access
+
+- **Source:** Ember
+- **Dataset:** China Clean Tech Export Data
+- **Official Website:** https://ember-energy.org/data/china-solar-exports-data/
+- **File Name:** `712clean_tech_exports_full_release_monthly.csv`
+- **Format:** CSV
+- **Update Frequency:** Monthly
+
+- ### Expected Variables
+The dataset contains 31,254 observations and 13 variables, including:
+
+- **Geographic Information:** `Area`, `Area type`, and `Region`, identifying destination countries, economies, and geographic regions.
+- **Temporal Information:** `Date`, indicating the monthly reporting period.
+- **Commodity Information:** `Commodity category`, distinguishing between All Technologies and Solar Panel products.
+- **Export Volume and Value:** `Amount (USD)`, representing the monetary value of exported products.
+- **Rolling Export Value:** Amount 12 month rolling sum (USD), representing the cumulative export value over the preceding twelve months, including the current month.
+
+### Spatial and Temporal Coverage
+
+- **Spatial Coverage:** Contains 54 unique geographic areas, including countries and territories across North America, Central America, South America, and the Caribbean. The geographic regions are categorized as North America and Latin America and the Caribbean.
+- **Project Study Area:** North America (United States, Canada, and Mexico) and South America.
+- **Temporal Coverage:** January 2018 – August 2026 in the current downloaded dataset.
+- **Temporal Resolution:** Monthly.
+- **Commodity Types:** All technologies and Solar PV
+
+### Permissions and Restrictions
+
+Ember provides publicly accessible data under the Creative Commons Attribution 4.0 (CC BY 4.0) license. Reuse and adaptation are permitted with appropriate attribution.
+
+**Data Limitations:**
+
+- The Amount 12 month rolling sum (USD) column contains 628 missing values in each worksheet, particularly where a complete twelve-month reporting history is unavailable.
+- Reported export destinations may not always represent the final installation destinations of clean technologies, as products may be redistributed or re-exported through intermediary countries.
+- The All technologies category includes Solar PV exports, so the two categories should not be added together to calculate total clean technology exports.
+- The dataset provides monthly observations, while the IRENA installed capacity and World Bank population datasets provide annual observations. Temporal aggregation and alignment will therefore be necessary for further analysis.
+- 2026 is an incomplete reporting year.
+
