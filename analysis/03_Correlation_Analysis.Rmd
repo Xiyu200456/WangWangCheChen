@@ -1,3 +1,16 @@
+## Analytical Approach
+
+> We used Pearson correlation analysis to examine the relationship between China's solar PV panel exports and annual solar PV capacity additions across North and South American countries.
+
+> This approach was selected to answer one of the supporting questions of our research theme: Is there a correlation between China's solar panel export capacity (MW) and annual solar PV capacity additions (MW) in destination countries?
+
+> We first calculated the overall correlation and then conducted separate analyses for North and South America to compare regional patterns.
+
+## Data Validation and Diagnostics
+
+> Before conducting the analysis, we checked for duplicate observations, missing values, and the accuracy of annual capacity additions calculations.
+
+> We identified 15 missing values in annual capacity additions, all from 2018. These observations were excluded, leaving observations from 2019 to 2025.
 
 ## 1. Validity Check
 
@@ -29,8 +42,6 @@ raw_data %>%
   select(Area, Year, PV_capacity_additions_MW)
 ```
 
-
-
 ```{r}
 #checking correctness of capaticy addition
 
@@ -56,9 +67,7 @@ validation %>%
   )
 ```
 
-
 ## 2. Overall Correlation
-
 
 ```{r}
 library(tidyverse)
@@ -142,4 +151,212 @@ ggplot(df, aes(
 
 ## 4. Sensity Analysis
 
+```{r}
+# Calculate market size by country
 
+market_size <- df %>%
+  group_by(Study_scope, Area) %>%
+  summarise(
+    total_exports_MW = sum(China_panel_exports_MW),
+    total_additions_MW = sum(PV_capacity_additions_MW),
+    .groups = "drop"
+  )
+
+print(market_size, n = Inf)
+```
+
+```{r}
+# Leave-one-country-out influence analysis
+
+countries <- df %>%
+  distinct(Study_scope, Area)
+
+influence_results <- purrr::map2_dfr(
+  countries$Study_scope,
+  countries$Area,
+
+  function(region, country) {
+
+    # Original regional data
+    region_data <- df %>%
+      filter(Study_scope == region)
+
+    # Remove one country
+    reduced_data <- region_data %>%
+      filter(Area != country)
+
+    # Calculate correlations
+    r_original <- cor(
+      region_data$China_panel_exports_MW,
+      region_data$PV_capacity_additions_MW
+    )
+
+    r_without <- cor(
+      reduced_data$China_panel_exports_MW,
+      reduced_data$PV_capacity_additions_MW
+    )
+
+    tibble(
+      Region = region,
+      Country_removed = country,
+      Original_r = r_original,
+      Without_country_r = r_without,
+      Change_in_r = r_without - r_original,
+      Absolute_change = abs(r_without - r_original)
+    )
+  }
+)
+
+# Rank countries by influence within each region
+
+influence_results %>%
+  group_by(Region) %>%
+  arrange(desc(Absolute_change), .by_group = TRUE) %>%
+  ungroup() %>%
+  print(n = Inf)
+```
+
+```{r}
+# Function to calculate Pearson correlation
+
+calculate_cor <- function(data, scenario) {
+
+  tibble(
+    Scenario = scenario,
+    N = nrow(data),
+    Countries = n_distinct(data$Area),
+    Pearson_r = cor(
+      data$China_panel_exports_MW,
+      data$PV_capacity_additions_MW
+    )
+  )
+}
+```
+
+```{r}
+
+# Global sensitivity analysis
+sensitivity_results <- bind_rows(
+  calculate_cor(df, "All countries"),
+
+  calculate_cor(
+    filter(df, Area != "United States"),
+    "Without USA"
+  ),
+
+  calculate_cor(
+    filter(df, Area != "Brazil"),
+    "Without Brazil"
+  ),
+
+  calculate_cor(
+    filter(df, !Area %in% c("United States", "Brazil")),
+    "Without both"
+  )
+)
+
+# Global Sensitivity Analysis Table
+
+overall_r <- sensitivity_results %>%
+  filter(Scenario == "All countries") %>%
+  pull(Pearson_r)
+
+global_table <- sensitivity_results %>%
+  filter(Scenario != "All countries") %>%
+  transmute(
+    `Country Removed` = recode(
+      Scenario,
+      "Without USA" = "USA",
+      "Without Brazil" = "Brazil",
+      "Without both" = "USA & Brazil"
+    ),
+    `Before Removing (r)` = round(overall_r, 3),
+    `After Removing (r)` = round(Pearson_r, 3)
+  )
+
+print(global_table)
+
+```
+
+
+
+
+```{r}
+# Regional sensitivity analysis
+
+regional_sensitivity <- bind_rows(
+
+  calculate_cor(
+    filter(df, Study_scope == "North America"),
+    "North America"
+  ),
+
+  calculate_cor(
+    filter(df,
+           Study_scope == "North America",
+           Area != "United States"),
+    "North America without USA"
+  ),
+
+  calculate_cor(
+    filter(df, Study_scope == "South America"),
+    "South America"
+  ),
+
+  calculate_cor(
+    filter(df,
+           Study_scope == "South America",
+           Area != "Brazil"),
+    "South America without Brazil"
+  )
+)
+
+# making table
+regional_table <- regional_sensitivity %>%
+  mutate(
+    Region = case_when(
+      grepl("^North America", Scenario) ~ "North America (-USA)",
+      grepl("^South America", Scenario) ~ "South America (-Brazil)"
+    ),
+    Comparison = if_else(
+      grepl("without", Scenario),
+      "After Removing (r)",
+      "Before Removing (r)"
+    )
+  ) %>%
+  select(Region, Comparison, Pearson_r) %>%
+  pivot_wider(
+    names_from = Comparison,
+    values_from = Pearson_r
+  ) %>%
+  mutate(
+    across(where(is.numeric), ~round(.x, 3))
+  ) %>%
+  select(
+    Region,
+    `Before Removing (r)`,
+    `After Removing (r)`
+  )
+
+print(regional_table)
+
+
+```
+
+## Results and Sensitivity Analysis
+
+> The overall Pearson correlation was r = 0.354, indicating a moderate positive linear association.
+
+> However, the regional results differed substantially:
+
+> North America: r = −0.013, indicating almost no pooled linear correlation.
+
+> South America: r = 0.986, indicating a very strong pooled positive correlation.
+
+> To evaluate the robustness of these findings, we conducted a sensitivity analysis by excluding major markets.
+
+> Excluding the United States increased the North American correlation from −0.013 to 0.823, while excluding Brazil decreased the South American correlation from 0.986 to 0.842.
+
+> These results suggest that major national markets have a substantial influence on the observed regional correlations.
+
+> Limitation of sensitivity analysis: North American correlations are generally sensitive to the exclusion of individual countries due to the region's small number of countries.
