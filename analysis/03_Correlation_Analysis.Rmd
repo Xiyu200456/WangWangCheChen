@@ -1,8 +1,64 @@
 
+## 1. Validity Check
 
 ```{r}
-file.exists("~/tracyche712/data/Processed/CLEANED_Study_area_data_2018_2025.csv")
+library(tidyverse)
+
+# Load original data (before filtering)
+raw_data <- read_csv(
+  "~/tracyche712/data/Processed/CLEANED_Study_area_data_2018_2025.csv"
+)
+
+# 1. Check duplicates
+raw_data %>%
+  count(Area, Year) %>%
+  filter(n > 1)
+
+# 2. Check missing values
+raw_data %>%
+  summarise(
+    missing_exports = sum(is.na(China_panel_exports_MW)),
+    missing_additions = sum(is.na(PV_capacity_additions_MW))
+  )
 ```
+
+```{r}
+#check the characteristics of missing additions
+raw_data %>%
+  filter(is.na(PV_capacity_additions_MW)) %>%
+  select(Area, Year, PV_capacity_additions_MW)
+```
+
+
+
+```{r}
+#checking correctness of capaticy addition
+
+validation <- raw_data %>%
+  arrange(Area, Year) %>%
+  group_by(Area) %>%
+  mutate(
+    calculated_additions =
+      PV_installed_capacity_MW -
+      lag(PV_installed_capacity_MW),
+
+    difference =
+      PV_capacity_additions_MW -
+      calculated_additions
+  ) %>%
+  ungroup()
+
+# Find incorrect calculations
+validation %>%
+  filter(
+    Year >= 2019,
+    abs(difference) > 0.01
+  )
+```
+
+
+## 2. Overall Correlation
+
 
 ```{r}
 library(tidyverse)
@@ -22,8 +78,6 @@ count(df, Study_scope)
 
 
 ```
-
-## 1. Overall Correlation
 
 ```{r}
 ggplot(df, aes(
@@ -52,7 +106,7 @@ cor(
 
 ```
 
-## 2. Regional Correlation
+## 3. Regional Correlation
 
 ```{r}
 regional_cor <- df %>%
@@ -86,9 +140,6 @@ ggplot(df, aes(
   theme_minimal()
 ```
 
-## 3. Sensitivity Analysis
+## 4. Sensity Analysis
 
-```{r}
-
-```
 
