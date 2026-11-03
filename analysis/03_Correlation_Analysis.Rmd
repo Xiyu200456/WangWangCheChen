@@ -1,0 +1,94 @@
+
+
+```{r}
+file.exists("~/tracyche712/data/Processed/CLEANED_Study_area_data_2018_2025.csv")
+```
+
+```{r}
+library(tidyverse)
+
+df <- read_csv("~/tracyche712/data/Processed/CLEANED_Study_area_data_2018_2025.csv")
+
+df <- df %>%
+  filter(
+    Year >= 2019,
+    !is.na(China_panel_exports_MW),
+    !is.na(PV_capacity_additions_MW)
+  )
+
+nrow(df)
+n_distinct(df$Area)
+count(df, Study_scope)
+
+
+```
+
+## 1. Overall Correlation
+
+```{r}
+ggplot(df, aes(
+  x = China_panel_exports_MW,
+  y = PV_capacity_additions_MW
+)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Chinese Solar PV Exports vs. Annual Capacity Additions",
+    x = "Chinese Solar PV Exports (MW)",
+    y = "Annual Solar PV Capacity Additions (MW)"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#Pearson Coefficient
+
+cor(
+  df$China_panel_exports_MW,
+  df$PV_capacity_additions_MW,
+  method = "pearson"
+)
+
+
+```
+
+## 2. Regional Correlation
+
+```{r}
+regional_cor <- df %>%
+  group_by(Study_scope) %>%
+  summarise(
+    n = n(),
+    pearson_r = cor(
+      China_panel_exports_MW,
+      PV_capacity_additions_MW,
+      method = "pearson"
+    ),
+    .groups = "drop"
+  )
+
+print(regional_cor)
+```
+
+```{r}
+ggplot(df, aes(
+  x = China_panel_exports_MW,
+  y = PV_capacity_additions_MW
+)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~Study_scope, scales = "free") +
+  labs(
+    title = "Solar Trade and Capacity Growth by Region",
+    x = "Chinese Solar PV Exports (MW)",
+    y = "Annual Solar PV Capacity Additions (MW)"
+  ) +
+  theme_minimal()
+```
+
+## 3. Sensitivity Analysis
+
+```{r}
+
+```
+
