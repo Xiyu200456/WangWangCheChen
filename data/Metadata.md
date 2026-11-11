@@ -127,7 +127,7 @@ World Bank provides publicly accessible data under the Creative Commons Attribut
 - **Format:** CSV
 - **Update Frequency:** Monthly
 
-- ### Expected Variables
+### Expected Variables
 The dataset contains 31,254 observations and 13 variables, including:
 
 - **Geographic Information:** `Area`, `Area type`, and `Region`, identifying destination countries, economies, and geographic regions.
