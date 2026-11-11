@@ -1,0 +1,165 @@
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggrepel)
+
+# Hide code and unnecessary messages in the final report
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+# Load cleaned data
+df <- read_csv(
+  "~/tracyche712/data/Processed/CLEANED_Study_area_data_2018_2025.csv",
+  show_col_types = FALSE
+) %>%
+  filter(
+    Year >= 2019,
+    !is.na(China_panel_exports_MW),
+    !is.na(PV_capacity_additions_MW)
+  )
+```
+
+```{r calculate-changes, include=FALSE}
+# Calculate changes between consecutive years (GW)
+change_2024 <- df %>%
+  group_by(Area, Study_scope) %>%
+  arrange(Year, .by_group = TRUE) %>%
+  mutate(
+    Export_Change_GW =
+      (China_panel_exports_MW - lag(China_panel_exports_MW)) / 1000,
+    Addition_Change_GW =
+      (PV_capacity_additions_MW - lag(PV_capacity_additions_MW)) / 1000
+  ) %>%
+  ungroup() %>%
+  filter(Year == 2024) %>%
+  mutate(
+    Quadrant = case_when(
+      Export_Change_GW > 0 & Addition_Change_GW > 0 ~ "Both Increased",
+      Export_Change_GW < 0 & Addition_Change_GW > 0 ~ "Exports Down / Additions Up",
+      Export_Change_GW < 0 & Addition_Change_GW < 0 ~ "Both Decreased",
+      Export_Change_GW > 0 & Addition_Change_GW < 0 ~ "Exports Up / Additions Down",
+      TRUE ~ "No Change / On Axis"
+    )
+  )
+```
+
+
+```{r quadrant-plot, fig.width=13, fig.height=10, out.width="100%"}
+
+# Symmetric axis limits
+x_lim <- max(abs(change_2024$Export_Change_GW)) * 1.25
+y_lim <- max(abs(change_2024$Addition_Change_GW)) * 1.25
+
+ggplot(change_2024, aes(
+  x = Export_Change_GW,
+  y = Addition_Change_GW
+)) +
+
+  # Four quadrant background colors
+  annotate("rect", xmin=-x_lim, xmax=0, ymin=0, ymax=y_lim,
+           fill="#EAF2FA", alpha=0.7) +
+  annotate("rect", xmin=0, xmax=x_lim, ymin=0, ymax=y_lim,
+           fill="#E7F5EB", alpha=0.7) +
+  annotate("rect", xmin=-x_lim, xmax=0, ymin=-y_lim, ymax=0,
+           fill="#F3EDF8", alpha=0.7) +
+  annotate("rect", xmin=0, xmax=x_lim, ymin=-y_lim, ymax=0,
+           fill="#FFF0E8", alpha=0.7) +
+
+  # Zero reference lines
+  geom_hline(yintercept=0, linetype="dashed", color="grey45") +
+  geom_vline(xintercept=0, linetype="dashed", color="grey45") +
+
+  # Quadrant labels
+  annotate("text", x=-Inf, y=Inf,
+           label="Exports ↓ / Additions ↑",
+           hjust=-0.1, vjust=1.5, size=4, fontface="bold") +
+  annotate("text", x=Inf, y=Inf,
+           label="Both ↑",
+           hjust=1.1, vjust=1.5, size=4, fontface="bold") +
+  annotate("text", x=-Inf, y=-Inf,
+           label="Both ↓",
+           hjust=-0.1, vjust=-0.6, size=4, fontface="bold") +
+  annotate("text", x=Inf, y=-Inf,
+           label="Exports ↑ / Additions ↓",
+           hjust=1.1, vjust=-0.6, size=4, fontface="bold") +
+
+  # Country points and labels
+  geom_point(aes(color=Study_scope), size=3.5) +
+  geom_text_repel(
+    aes(label=Area, color=Study_scope),
+    size=3.5, box.padding=0.6, point.padding=0.3,
+    force=5, max.overlaps=Inf, max.time=4,
+    seed=42, show.legend=FALSE
+  ) +
+
+  # Symmetric pseudo-log axes
+  scale_x_continuous(
+    transform=scales::pseudo_log_trans(sigma=0.001),
+    limits=c(-x_lim, x_lim),
+    expand=c(0, 0)
+  ) +
+  scale_y_continuous(
+    transform=scales::pseudo_log_trans(sigma=0.001),
+    limits=c(-y_lim, y_lim),
+    expand=c(0, 0)
+  ) +
+
+  # Region colors
+  scale_color_manual(values=c(
+    "North America"="#E76F51",
+    "South America"="#2A9D8F"
+  )) +
+
+  labs(
+    title="Changes in Solar PV Trade and Deployment in 2024",
+    subtitle="Year-over-year changes from 2023 to 2024",
+    x="Change in Chinese Solar PV Exports (GW)",
+    y="Change in Annual PV Capacity Additions (GW)",
+    color="Region",
+    caption="Symmetric pseudo-log axes (sigma = 0.001)."
+  ) +
+
+  theme_minimal(base_size=12) +
+  theme(
+    plot.title=element_text(face="bold", size=16),
+    legend.position="bottom",
+    panel.grid.minor=element_blank(),
+    aspect.ratio=1
+  )
+```
+
+```{r quadrant-summary}
+library(gt)
+
+quadrant_summary <- change_2024 %>%
+  count(Study_scope, Quadrant, name = "Countries") %>%
+  mutate(
+    Study_scope = factor(
+      Study_scope,
+      levels = c("North America", "South America")
+    )
+  ) %>%
+  arrange(Study_scope)
+
+quadrant_summary %>%
+  gt(groupname_col = "Study_scope") %>%
+  tab_header(
+    title = "2024 Trade–Deployment Change Patterns",
+    subtitle = "Changes from 2023 to 2024"
+  ) %>%
+  cols_label(
+    Quadrant = "Change Pattern",
+    Countries = "Number of Countries"
+  ) %>%
+  cols_align(
+    align = "center",
+    columns = Countries
+  ) %>%
+  opt_row_striping() %>%
+  tab_options(
+    table.font.size = px(14),
+    data_row.padding = px(8),
+    row_group.font.weight = "bold"
+  )
+```
+```
+
